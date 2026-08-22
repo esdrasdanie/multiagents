@@ -1,23 +1,32 @@
 import { Annotation, StateGraph, START, END } from '@langchain/langgraph'
+import { BaseMessage, AIMessage, HumanMessage } from '@langchain/core/messages'
 import fs from "fs"
 
+//content: { role: "ai/user", message: "..." }
+
 const State = Annotation.Root({
-  input: Annotation<string>,
-  output: Annotation<string[]>({
+  input: Annotation<HumanMessage>,
+  executedNodes: Annotation<number>({
+    reducer: (currExecuted, newExecution) => currExecuted + 1,
+    default: () => 0
+  }),
+  output: Annotation<BaseMessage[]>({
     reducer: (currOutput, newOutput) => currOutput.concat(newOutput),
-    default: () => ["olá"]
+    default: () => []
   })
 })
 
 const mockAction = (state: typeof State) => {
   return {
-    output: ["Matheus disse 'oi'!"]
+    executedNodes: 1,
+    output: [ new AIMessage("Olá da IA") ]
   }
 }
 
 const mockAction2 = (state: typeof State) => {
   return {
-    output: ["Juliana disse 'oi'!"]
+    executedNodes: 1,
+    output: [ new HumanMessage("Olá do humano")]
   }
 }
 
@@ -29,7 +38,7 @@ const graph = new StateGraph(State)
   .addEdge('juliana', END)
   .compile()
 
-const result = await graph.invoke({ input: 'olá!' })
+const result = await graph.invoke({ input: new HumanMessage('olá!') })
 
 console.log(result)
 
