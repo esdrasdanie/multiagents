@@ -1,6 +1,7 @@
 import { State } from "./state.js"
 import { z } from "zod"
 import { ai } from "./google_genai.js"
+import { ChatPromptTemplate, MessagesPlaceholder } from "@langchain/core/prompts"
 
 const routingTool = {
   name: 'routingTool',
@@ -15,16 +16,23 @@ const routingTool = {
   }),
 }
 
+const prompt = ChatPromptTemplate.fromMessages([
+  ["system", "Você é supervisor de um consultório. Tome a melhor ação para atender a necessidade do cliente " + 
+    "com base na conversa a seguir:"],
+  new MessagesPlaceholder("messages"),
+  //messages
+  ["human", "Escolha um desses próximos estados: financial_specialist, scheduling_specialist, comms_specialist, END (estado terminal se não tiver mais nada para fazer)"]
+])
+
 export const supervisor = async (state: typeof State.State) => {
   console.log('Supervisor escolhendo o próximo')
+  console.log(state.messages)
 
   const aiWithTool = ai.bindTools([routingTool], {
     tool_choice: 'routingTool',
   })
 
-  const aiResponse = await aiWithTool.invoke(
-    'Não preciso de mais nada, termine. Escolha um desses próximos estados: financial_specialist, scheduling_specialist, comms_specialist, END. Retorne apenas o nome do especialista e nada mais. Sem quebra de linha',
-  )
+  const aiResponse = await prompt.pipe(aiWithTool).invoke({messages: state.messages})
 
   if (aiResponse.tool_calls) {
     return {

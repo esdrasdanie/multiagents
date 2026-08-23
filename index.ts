@@ -21,7 +21,7 @@ const graph = new StateGraph(State)
   .addEdge('comms_specialist', 'supervisor')
   .compile()
 
-const result = await graph.invoke({ input: new HumanMessage('olá!') })
+const result = await graph.invoke({ messages: [new HumanMessage('olá, quero ver minha conta')] })
 
 console.log(result)
 
