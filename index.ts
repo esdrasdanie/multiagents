@@ -1,10 +1,11 @@
 import { Annotation, StateGraph, START, END } from '@langchain/langgraph'
 import { BaseMessage, AIMessage, HumanMessage } from '@langchain/core/messages'
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
+import { z } from 'zod'
 import fs from 'fs'
 
 const ai = new ChatGoogleGenerativeAI({
-  model: 'gemini-3-flash-preview',
+  model: 'gemini-2.5-flash',
   apiKey: process.env.GOOGLE_GEN_AI_API_KEY,
 })
 
@@ -21,17 +22,38 @@ const State = Annotation.Root({
   }),
 })
 
+const routingTool = {
+  name: 'routingTool',
+  description: 'Selecione o próximo estado',
+  schema: z.object({
+    next: z.enum([
+      'financial_specialist',
+      'scheduling_specialist',
+      'comms_specialist',
+      'END',
+    ]),
+  }),
+}
+
 const supervisor = async (state: typeof State.State) => {
   console.log('Supervisor escolhendo o próximo')
 
-  const nextNode = await ai.invoke(
-    'Escolha um desses próximos estados: financial_specialist, scheduling_specialist, comms_specialist, END. Retorne apenas o nome do especialista e nada mais. Sem quebra de linha',
+  const aiWithTool = ai.bindTools([routingTool], {
+    tool_choice: 'routingTool',
+  })
+
+  const aiResponse = await aiWithTool.invoke(
+    'Não preciso de mais nada, termine. Escolha um desses próximos estados: financial_specialist, scheduling_specialist, comms_specialist, END. Retorne apenas o nome do especialista e nada mais. Sem quebra de linha',
   )
 
-  console.log(nextNode.content)
-
-  return {
-    nextNode: nextNode.content,
+  if (aiResponse.tool_calls) {
+    return {
+      nextNode: aiResponse.tool_calls[0].args.next,
+    }
+  } else {
+    return {
+      nextNode: 'END',
+    }
   }
 }
 
