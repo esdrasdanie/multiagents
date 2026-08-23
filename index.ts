@@ -1,85 +1,11 @@
-import { Annotation, StateGraph, START, END } from '@langchain/langgraph'
-import { BaseMessage, AIMessage, HumanMessage } from '@langchain/core/messages'
-import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
-import { z } from 'zod'
+import { StateGraph, START, END } from '@langchain/langgraph'
+import { HumanMessage } from '@langchain/core/messages'
 import fs from 'fs'
-
-const ai = new ChatGoogleGenerativeAI({
-  model: 'gemini-2.5-flash',
-  apiKey: process.env.GOOGLE_GEN_AI_API_KEY,
-})
-
-const State = Annotation.Root({
-  input: Annotation<HumanMessage>,
-  executedNodes: Annotation<number>({
-    reducer: (currExecuted, newExecution) => currExecuted + 1,
-    default: () => 0,
-  }),
-  nextNode: Annotation<string>,
-  output: Annotation<BaseMessage[]>({
-    reducer: (currOutput, newOutput) => currOutput.concat(newOutput),
-    default: () => [],
-  }),
-})
-
-const routingTool = {
-  name: 'routingTool',
-  description: 'Selecione o próximo estado',
-  schema: z.object({
-    next: z.enum([
-      'financial_specialist',
-      'scheduling_specialist',
-      'comms_specialist',
-      'END',
-    ]),
-  }),
-}
-
-const supervisor = async (state: typeof State.State) => {
-  console.log('Supervisor escolhendo o próximo')
-
-  const aiWithTool = ai.bindTools([routingTool], {
-    tool_choice: 'routingTool',
-  })
-
-  const aiResponse = await aiWithTool.invoke(
-    'Não preciso de mais nada, termine. Escolha um desses próximos estados: financial_specialist, scheduling_specialist, comms_specialist, END. Retorne apenas o nome do especialista e nada mais. Sem quebra de linha',
-  )
-
-  if (aiResponse.tool_calls) {
-    return {
-      nextNode: aiResponse.tool_calls[0].args.next,
-    }
-  } else {
-    return {
-      nextNode: 'END',
-    }
-  }
-}
-
-const financialSpecialist = (state: typeof State.State) => {
-  console.log('Financial specialist chamando')
-  return {
-    executedNodes: 1,
-    output: [new AIMessage('Olá da IA')],
-  }
-}
-
-const schedulingSpecialist = (state: typeof State.State) => {
-  console.log('Scheduling specialist chamando')
-  return {
-    executedNodes: 1,
-    output: [new AIMessage('Olá da IA')],
-  }
-}
-
-const commsSpecialist = (state: typeof State.State) => {
-  console.log('Comms specialist chamando')
-  return {
-    executedNodes: 1,
-    output: [new AIMessage('Olá da IA')],
-  }
-}
+import { State } from './state.js'
+import { supervisor } from './supervisor.js'
+import { financialSpecialist } from './financial_specialist.js'
+import { schedulingSpecialist } from './scheduling_specialist.js'
+import { commsSpecialist } from './comms_specialist.js'
 
 const graph = new StateGraph(State)
   .addNode('supervisor', supervisor)
