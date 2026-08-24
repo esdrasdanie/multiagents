@@ -23,6 +23,7 @@ const prompt = ChatPromptTemplate.fromMessages([
 ]);
 export const supervisor = async (state) => {
     console.log('Supervisor escolhendo o próximo');
+    console.log(state.messages);
     const aiWithTool = ai.bindTools([routingTool], {
         tool_choice: 'routingTool',
     });

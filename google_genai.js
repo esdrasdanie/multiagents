@@ -1,6 +1,6 @@
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 export const ai = new ChatGoogleGenerativeAI({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3-flash-preview',
     apiKey: process.env.GOOGLE_GEN_AI_API_KEY,
 });
 //# sourceMappingURL=google_genai.js.map

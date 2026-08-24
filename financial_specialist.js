@@ -1,8 +1,8 @@
-import { AIMessage } from "@langchain/core/messages";
+import { HumanMessage } from "@langchain/core/messages";
 export const financialSpecialist = (state) => {
     console.log('Financial specialist chamando');
     return {
-        output: [new AIMessage('Aqui está sua conta: 300 reais')],
+        messages: [new HumanMessage('Aqui está sua conta: 300 reais. Pode terminar')],
     };
 };
 //# sourceMappingURL=financial_specialist.js.map
