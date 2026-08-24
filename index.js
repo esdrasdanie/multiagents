@@ -17,9 +17,9 @@ const graph = new StateGraph(State)
 })
     .addEdge('financial_specialist', 'supervisor')
     .addEdge('scheduling_specialist', 'supervisor')
-    .addEdge('comms_specialist', 'supervisor')
+    .addEdge('comms_specialist', END)
     .compile();
-const result = await graph.invoke({ messages: [new HumanMessage('olá, quero ver minha conta')] });
+const result = await graph.invoke({ messages: [new HumanMessage('olá, quero consultar o valor do meu boleto')] });
 console.log(result);
 const drawableGraph = await graph.getGraphAsync();
 const graphImage = await drawableGraph.drawMermaidPng();

@@ -18,7 +18,7 @@ const graph = new StateGraph(State)
   })
   .addEdge('financial_specialist', 'supervisor')
   .addEdge('scheduling_specialist', 'supervisor')
-  .addEdge('comms_specialist', 'supervisor')
+  .addEdge('comms_specialist', END)
   .compile()
 
 const result = await graph.invoke({ messages: [new HumanMessage('olá, quero consultar o valor do meu boleto')] })

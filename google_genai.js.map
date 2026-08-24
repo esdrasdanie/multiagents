@@ -1,1 +1,1 @@
-{"version":3,"file":"google_genai.js","sourceRoot":"","sources":["google_genai.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,sBAAsB,EAAE,MAAM,yBAAyB,CAAA;AAEhE,MAAM,CAAC,MAAM,EAAE,GAAG,IAAI,sBAAsB,CAAC;IAC3C,KAAK,EAAE,wBAAwB;IAC/B,MAAM,EAAE,OAAO,CAAC,GAAG,CAAC,qBAAqB;CAC1C,CAAC,CAAA"}
+{"version":3,"file":"google_genai.js","sourceRoot":"","sources":["google_genai.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,sBAAsB,EAAE,MAAM,yBAAyB,CAAA;AAEhE,MAAM,CAAC,MAAM,EAAE,GAAG,IAAI,sBAAsB,CAAC;IAC3C,KAAK,EAAE,kBAAkB;IACzB,MAAM,EAAE,OAAO,CAAC,GAAG,CAAC,qBAAqB,IAAI,EAAE;CAChD,CAAC,CAAA"}

@@ -1,6 +1,6 @@
-import { AIMessage } from "@langchain/core/messages";
-import type { State } from "./state.js";
-export declare const commsSpecialist: (state: typeof State.State) => {
-    messages: AIMessage<import("@langchain/core/messages").MessageStructure<import("@langchain/core/messages").MessageToolSet>>[];
-};
+import { HumanMessage } from '@langchain/core/messages';
+import type { State } from './state.js';
+export declare const commsSpecialist: (state: typeof State.State) => Promise<{
+    messages: HumanMessage<import("@langchain/core/messages").MessageStructure<import("@langchain/core/messages").MessageToolSet>>[];
+}>;
 //# sourceMappingURL=comms_specialist.d.ts.map
