@@ -17,7 +17,8 @@ const routingTool = {
 }
 
 const prompt = ChatPromptTemplate.fromMessages([
-  ["system", "Você é supervisor de um consultório. Tome a melhor ação para atender a necessidade do cliente " + 
+  ["system", "Você é supervisor de um consultório. Tome a melhor ação para atender a necessidade do cliente. " +
+    "ao final de tudo, chame o especialista de comunicação para enviar um email para o cliente. Depois de enviar exatamente um email, termine." + 
     "com base na conversa a seguir:"],
   new MessagesPlaceholder("messages"),
   //messages
